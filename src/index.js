@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 const axios = require('axios');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
@@ -123,8 +123,15 @@ function play(guild, song) {
         queue.delete(guild.id);
         return;
     }
-
-    const stream = ytdl(song.url, { filter: 'audioonly' });
+console.log(song);
+    const stream = ytdl(song.url,
+         { filter: "audioonly",
+        quality: 'highestaudio',
+        highWaterMark: 1 << 25,
+        videoDuration: "medium",
+     }
+    );
+    console.log(stream);
     const resource = createAudioResource(stream);
     serverQueue.player.play(resource);
 
